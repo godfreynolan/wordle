@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordle</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 20px; }
+        .guess-container { display: grid; grid-template-columns: repeat(5, 50px); gap: 10px; justify-content: center; margin: 20px 0; }
+        .tile { width: 50px; height: 50px; line-height: 50px; font-size: 18px; text-align: center; border: 1px solid #ccc; }
+        .green { background-color: #6aaa64; color: white; }
+        .yellow { background-color: #c9b458; color: white; }
+        .gray { background-color: #787c7e; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Wordle Game</h1>
+    {% if success %}
+        <h2>Congratulations! You guessed the word: {{ secret_word }}</h2>
+        <a href="{{ url_for('reset') }}">Play Again</a>
+    {% elif failure %}
+        <h2>Game Over! The word was: {{ secret_word }}</h2>
+        <a href="{{ url_for('reset') }}">Try Again</a>
+    {% else %}
+        <form method="post" action="{{ url_for('index') }}">
+            <input type="text" name="guess" maxlength="5" required>
+            <button type="submit">Submit Guess</button>
+        </form>
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+    {% endif %}
+    <div>
+        {% for attempt in attempts %}
+            <div class="guess-container">
+                {% for letter, color in attempt %}
+                    <div class="tile {{ color }}">{{ letter }}</div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
